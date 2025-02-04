@@ -164,5 +164,3 @@ export default async function decorate(block) {
   navWrapper.append(nav);
   block.append(navWrapper);
 }
-
-console.log("I am here changes; push to prod")
