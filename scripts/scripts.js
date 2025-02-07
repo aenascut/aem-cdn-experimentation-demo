@@ -70,7 +70,7 @@ async function getElementForProposition(proposition) {
 async function getAndApplyRenderDecisions() {
   // Get the decisions, but don't render them automatically
   // so we can hook up into the AEM EDS page load sequence
-  const response = await window.alloy('sendEvent', { renderDecisions: true });
+  const response = await window.alloy('sendEvent', { renderDecisions: false });
   const { propositions } = response;
   onDecoratedElement(async () => {
     await window.alloy('applyPropositions', { propositions });
@@ -94,13 +94,18 @@ async function getAndApplyRenderDecisions() {
   });
 }
 
-const alloyLoadedPromise = initWebSDK('./alloy.min.js', {
+const serverSideConfig = window.oddServerSideConfig;
+const bootstrapedServerSide = serverSideConfig && serverSideConfig.preventAlloyImport;
+
+const alloyLoadedPromise = bootstrapedServerSide ? Promise.resolve() : initWebSDK('./alloy.min.js', {
   datastreamId: '6f670d48-16d1-4cef-bd2f-b9efde171c17',
   orgId: '906E3A095DC834230A495FD6@AdobeOrg',
 });
-// Always load target
-// if (getMetadata('target')) {
-alloyLoadedPromise.then(() => getAndApplyRenderDecisions());
+  // Always load target
+  // if (getMetadata('target')) {
+if (!bootstrapedServerSide) {
+  alloyLoadedPromise.then(() => getAndApplyRenderDecisions());
+}
 // }
 
 /**
