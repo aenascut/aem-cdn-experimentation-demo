@@ -78,6 +78,22 @@ async function getAndApplyRenderDecisions() {
     propositions.forEach((p) => {
       p.items = p.items.filter((i) => i.schema !== 'https://ns.adobe.com/personalization/dom-action' || !getElementForProposition(i));
     });
+
+    propositions.forEach((p) => {
+      const content = p.items
+        .filter((i) => i.schema === 'https://ns.adobe.com/personalization/json-content-item')
+        .flatMap((i) => i.data.content);
+      if (Array.isArray(content) && content.length) {
+        content.forEach((c) => {
+          if (c.selector && c.payload) {
+            const el = document.querySelector(c.selector);
+            if (el) {
+              el.innerHTML = c.payload;
+            }
+          }
+        });
+      }
+    });
   });
 
   // Reporting is deferred to avoid long tasks
