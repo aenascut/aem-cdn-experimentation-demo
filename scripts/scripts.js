@@ -8,10 +8,13 @@ import {
   decorateBlocks,
   decorateTemplateAndTheme,
   waitForFirstImage,
+  waitForLCP,
   loadSection,
   loadSections,
   loadCSS,
 } from './aem.js';
+
+const LCP_BLOCKS = []; // add your LCP blocks to the list
 
 // Alloy Web SDK
 function initWebSDK(path, config) {
@@ -151,6 +154,18 @@ async function loadFonts() {
   }
 }
 
+function autolinkModals(element) {
+  element.addEventListener('click', async (e) => {
+    const origin = e.target.closest('a');
+
+    if (origin && origin.href && origin.href.includes('/modals/')) {
+      e.preventDefault();
+      const { openModal } = await import(`${window.hlx.codeBasePath}/blocks/modal/modal.js`);
+      openModal(origin.href);
+    }
+  });
+}
+
 /**
  * Builds all synthetic blocks in a container element.
  * @param {Element} main The container element
@@ -193,7 +208,7 @@ async function loadEager(doc) {
     // show the LCP block in a dedicated frame to reduce TBT
     await new Promise((res) => {
       window.requestAnimationFrame(async () => {
-        // await waitForLCP(LCP_BLOCKS);
+        await waitForLCP(LCP_BLOCKS);
         res();
       });
     });
@@ -217,6 +232,8 @@ async function loadEager(doc) {
  * @param {Element} doc The container element
  */
 async function loadLazy(doc) {
+  autolinkModals(doc);
+
   const main = doc.querySelector('main');
   await loadSections(main);
 
