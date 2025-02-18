@@ -95,7 +95,12 @@ async function getAndApplyRenderDecisions() {
           if (c.selector && c.payload) {
             const el = document.querySelector(c.selector);
             if (el) {
-              el.innerHTML = c.payload;
+              if (c.type === 'innerHTML') {
+                el.innerHTML = c.payload;
+              }
+              if (c.type === 'outerHTML') {
+                el.innerHTML = c.payload;
+              }
             }
           }
         });
