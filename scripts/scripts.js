@@ -99,7 +99,7 @@ async function getAndApplyRenderDecisions() {
                 el.innerHTML = c.payload;
               }
               if (c.type === 'outerHTML') {
-                el.innerHTML = c.payload;
+                el.outerHTML = c.payload;
               }
             }
           }
