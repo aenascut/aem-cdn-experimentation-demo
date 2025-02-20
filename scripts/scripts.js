@@ -283,9 +283,7 @@ async function loadPage() {
 loadPage();
 
 if (window.initPropositionsDecisions) {
-  try {
+  onDecoratedElement(() => {
     applyJsonDecisions(window.initPropositionsDecisions);
-  } catch {
-    console.log('Failed to apply propositions');
-  }
+  });
 }
