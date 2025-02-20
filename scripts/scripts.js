@@ -281,3 +281,5 @@ async function loadPage() {
 }
 
 loadPage();
+
+window.applyJsonDecisions = applyJsonDecisions;
