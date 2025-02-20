@@ -83,8 +83,7 @@ async function getAndApplyRenderDecisions() {
     });
 
     propositions.forEach((p) => {
-      const filterJsonDecisions = (i) => i.schema === 'https://ns.adobe.com/personalization/json-content-item'
-        && i.data.content && Array.isArray(i.data.content) && i.data.content.length;
+      const filterJsonDecisions = (i) => i.schema === 'https://ns.adobe.com/personalization/json-content-item' && Array.isArray(i.data?.content?.payload) && i.data.content?.payload?.length;
       const content = p.items
         .filter(filterJsonDecisions)
         .flatMap((i) => i.data.content);
