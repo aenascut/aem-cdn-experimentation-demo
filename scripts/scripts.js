@@ -284,7 +284,7 @@ loadPage();
 
 if (window.initPropositionsDecisions) {
   try {
-    applyJsonDecisions(JSON.parse(window.initPropositionsDecisions));
+    applyJsonDecisions(window.initPropositionsDecisions);
   } catch {
     console.log('Failed to apply propositions');
   }
