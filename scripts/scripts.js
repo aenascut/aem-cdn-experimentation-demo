@@ -100,10 +100,10 @@ async function getAndApplyRenderDecisions() {
             const el = document.querySelector(selector);
             if (el) {
               if (type === 'innerHTML') {
-                el.innerHTML = c.payload;
+                el.innerHTML = payload;
               }
               if (type === 'outerHTML') {
-                el.outerHTML = c.payload;
+                el.outerHTML = payload;
               }
             }
           }
