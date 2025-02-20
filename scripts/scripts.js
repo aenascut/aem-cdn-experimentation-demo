@@ -70,6 +70,37 @@ async function getElementForProposition(proposition) {
   return document.querySelector(selector);
 }
 
+function applyJsonDecisions(propositions) {
+  propositions.forEach((p) => {
+    const filterJsonDecisions = (i) => i.schema === 'https://ns.adobe.com/personalization/json-content-item' && Array.isArray(i.data?.content?.payload) && i.data.content?.payload?.length;
+
+    const contentPayload = p.items
+      .filter(filterJsonDecisions)
+      .flatMap((i) => i.data.content)
+      .flatMap((c) => c.payload);
+    p.items = p.items.filter((i) => !filterJsonDecisions(i));
+
+    if (Array.isArray(contentPayload) && contentPayload?.length) {
+      contentPayload.forEach((c) => {
+        const selector = c?.browser?.selector || c.selector;
+        const payload = c?.browser?.payload || c.payload;
+        const type = c?.browser?.type || c.type;
+
+        if (selector && payload) {
+          const el = document.querySelector(selector);
+          if (el) {
+            if (type === 'innerHTML') {
+              el.innerHTML = payload;
+            }
+            if (type === 'outerHTML') {
+              el.outerHTML = payload;
+            }
+          }
+        }
+      });
+    }
+  });
+}
 async function getAndApplyRenderDecisions() {
   // Get the decisions, but don't render them automatically
   // so we can hook up into the AEM EDS page load sequence
@@ -81,35 +112,7 @@ async function getAndApplyRenderDecisions() {
     propositions.forEach((p) => {
       p.items = p.items.filter((i) => i.schema !== 'https://ns.adobe.com/personalization/dom-action' || !getElementForProposition(i));
     });
-
-    propositions.forEach((p) => {
-      const filterJsonDecisions = (i) => i.schema === 'https://ns.adobe.com/personalization/json-content-item' && Array.isArray(i.data?.content?.payload) && i.data.content?.payload?.length;
-      const contentPayload = p.items
-        .filter(filterJsonDecisions)
-        .flatMap((i) => i.data.content)
-        .flatMap((c) => c.payload);
-      p.items = p.items.filter((i) => !filterJsonDecisions(i));
-
-      if (Array.isArray(contentPayload) && contentPayload?.length) {
-        contentPayload.forEach((c) => {
-          const selector = c?.browser?.selector || c.selector;
-          const payload = c?.browser?.payload || c.payload;
-          const type = c?.browser?.type || c.type;
-
-          if (selector && payload) {
-            const el = document.querySelector(selector);
-            if (el) {
-              if (type === 'innerHTML') {
-                el.innerHTML = payload;
-              }
-              if (type === 'outerHTML') {
-                el.outerHTML = payload;
-              }
-            }
-          }
-        });
-      }
-    });
+    applyJsonDecisions(propositions);
   });
 
   // Reporting is deferred to avoid long tasks
