@@ -282,4 +282,10 @@ async function loadPage() {
 
 loadPage();
 
-window.applyJsonDecisions = applyJsonDecisions;
+if (window.initPropositionsDecisions) {
+  try {
+    applyJsonDecisions(JSON.parse(window.initPropositionsDecisions));
+  } catch {
+    console.log('Failed to apply propositions');
+  }
+}
