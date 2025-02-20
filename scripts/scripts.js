@@ -90,15 +90,19 @@ async function getAndApplyRenderDecisions() {
         .flatMap((i) => i.data.content);
       p.items = p.items.filter((i) => !filterJsonDecisions(i));
 
-      if (Array.isArray(content) && content.length) {
-        content.forEach((c) => {
-          if (c.selector && c.payload) {
-            const el = document.querySelector(c.selector);
+      if (Array.isArray(content?.payload) && content?.payload?.length) {
+        const selector = content?.browser?.selector || content.selector;
+        const payload = content?.browser?.payload || content.payload;
+        const type = content?.browser?.type || content.type;
+
+        content.payload.forEach((c) => {
+          if (selector && payload) {
+            const el = document.querySelector(selector);
             if (el) {
-              if (c.type === 'innerHTML') {
+              if (type === 'innerHTML') {
                 el.innerHTML = c.payload;
               }
-              if (c.type === 'outerHTML') {
+              if (type === 'outerHTML') {
                 el.outerHTML = c.payload;
               }
             }
