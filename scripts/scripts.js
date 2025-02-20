@@ -84,17 +84,18 @@ async function getAndApplyRenderDecisions() {
 
     propositions.forEach((p) => {
       const filterJsonDecisions = (i) => i.schema === 'https://ns.adobe.com/personalization/json-content-item' && Array.isArray(i.data?.content?.payload) && i.data.content?.payload?.length;
-      const content = p.items
+      const contentPayload = p.items
         .filter(filterJsonDecisions)
-        .flatMap((i) => i.data.content);
+        .flatMap((i) => i.data.content)
+        .flatMap((c) => c.payload);
       p.items = p.items.filter((i) => !filterJsonDecisions(i));
 
-      if (Array.isArray(content?.payload) && content?.payload?.length) {
-        const selector = content?.browser?.selector || content.selector;
-        const payload = content?.browser?.payload || content.payload;
-        const type = content?.browser?.type || content.type;
+      if (Array.isArray(contentPayload) && contentPayload?.length) {
+        contentPayload.forEach((c) => {
+          const selector = c?.browser?.selector || c.selector;
+          const payload = c?.browser?.payload || c.payload;
+          const type = c?.browser?.type || c.type;
 
-        content.payload.forEach((c) => {
           if (selector && payload) {
             const el = document.querySelector(selector);
             if (el) {
