@@ -84,17 +84,11 @@ function applyJsonDecisions(propositions) {
       contentPayload.forEach((c) => {
         const selector = c?.browser?.selector || c.selector;
         const payload = c?.browser?.payload || c.payload;
-        const type = c?.browser?.type || c.type;
 
         if (selector && payload) {
           const el = document.querySelector(selector);
           if (el) {
-            if (type === 'innerHTML') {
-              el.innerHTML = payload;
-            }
-            if (type === 'outerHTML') {
-              el.outerHTML = payload;
-            }
+            el.outerHTML = payload;
           }
         }
       });
@@ -133,8 +127,8 @@ const serverSideConfig = window.oddServerSideConfig;
 const bootstrapedServerSide = serverSideConfig && serverSideConfig.preventAlloyImport;
 
 const alloyLoadedPromise = bootstrapedServerSide ? Promise.resolve() : initWebSDK('./alloy.min.js', {
-  datastreamId: '6f670d48-16d1-4cef-bd2f-b9efde171c17',
-  orgId: '906E3A095DC834230A495FD6@AdobeOrg',
+  datastreamId: 'bdb5cb8a-4496-4abd-8afc-e9396c1b1c27',
+  orgId: '82C94E025B2385B40A495E2C@AdobeOrg',
 });
   // Always load target
   // if (getMetadata('target')) {
