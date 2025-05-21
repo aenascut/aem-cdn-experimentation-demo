@@ -167,8 +167,20 @@ if (window.oddServerSideConfig && window.oddServerSideConfig.loadAT) {
         },
       },
     }).then((data) => {
-      console.log(data);
-      // applyJsonDecisions(data.)
+      const option = data.execute.pageLoad.options.find((opt) => opt?.responseTokens['activity.id'] === '272129');
+      const { content } = option ?? {};
+
+      content?.forEach((c) => {
+        const selector = c?.browser?.selector || c.selector;
+        const payload = c?.browser?.payload || c.payload;
+
+        if (selector && payload) {
+          const el = document.querySelector(selector);
+          if (el) {
+            el.outerHTML = payload;
+          }
+        }
+      });
     });
   });
 }
