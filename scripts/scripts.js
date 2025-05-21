@@ -37,6 +37,14 @@ function initWebSDK(path, config) {
   });
 }
 
+function initATSDK(path) {
+  // Loading and configuring the websdk
+  return new Promise((resolve) => {
+    import(path)
+      .then(resolve);
+  });
+}
+
 function onDecoratedElement(fn) {
   // Apply propositions to all already decorated blocks/sections
   if (document.querySelector('[data-block-status="loaded"],[data-section-status="loaded"]')) {
@@ -123,6 +131,13 @@ async function getAndApplyRenderDecisions() {
   });
 }
 
+const searchParams = new URLSearchParams(window.location.search);
+if (searchParams.get('implementation') && searchParams.get('implementation') === 'at') {
+  window.oddServerSideConfig = {
+    preventAlloyImport: true,
+    loadAT: true,
+  };
+}
 const serverSideConfig = window.oddServerSideConfig;
 const bootstrapedServerSide = serverSideConfig && serverSideConfig.preventAlloyImport;
 
@@ -136,6 +151,18 @@ if (!bootstrapedServerSide) {
   alloyLoadedPromise.then(() => getAndApplyRenderDecisions());
 }
 // }
+
+if (window.oddServerSideConfig && window.oddServerSideConfig.loadAT) {
+  initATSDK('./at.js').then(() => {
+    window.adobe.target.getOffers({
+      request: {
+        prefetch: {
+          views: [{}],
+        },
+      },
+    });
+  });
+}
 
 /**
  * Builds hero block and prepends to main in a new section.
