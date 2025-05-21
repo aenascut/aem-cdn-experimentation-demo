@@ -169,9 +169,8 @@ if (window.oddServerSideConfig && window.oddServerSideConfig.loadAT) {
     }).then((data) => {
       const option = data.execute.pageLoad.options.find((opt) => opt?.responseTokens['activity.id'] === '272129');
       const { content } = option ?? {};
-      const { payload } = content ?? {};
 
-      payload?.forEach((c) => {
+      content?.payload?.forEach((c) => {
         const selector = c?.browser?.selector || c.selector;
         const payload = c?.browser?.payload || c.payload;
 
