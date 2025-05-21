@@ -153,14 +153,23 @@ if (!bootstrapedServerSide) {
 // }
 
 if (window.oddServerSideConfig && window.oddServerSideConfig.loadAT) {
+  window.targetPageParams = () => ({
+    at_property: '11e71d11-fc01-4d1e-f157-2783bc9c0e77',
+  });
+
   initATSDK('./at.min.js').then(() => {
     window.adobe.target.getOffers({
       request: {
-        pageLoad: {
-          parameters: {},
+        execute: {
+          pageLoad: {
+            parameters: {},
+          },
         },
       },
-    }).then((data) => console.log(data));
+    }).then((data) => {
+      console.log(data);
+      // applyJsonDecisions(data.)
+    });
   });
 }
 
