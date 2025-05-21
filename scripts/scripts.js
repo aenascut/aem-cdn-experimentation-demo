@@ -156,11 +156,11 @@ if (window.oddServerSideConfig && window.oddServerSideConfig.loadAT) {
   initATSDK('./at.min.js').then(() => {
     window.adobe.target.getOffers({
       request: {
-        prefetch: {
-          views: [{}],
+        pageLoad: {
+          parameters: {},
         },
       },
-    });
+    }).then((data) => console.log(data));
   });
 }
 
