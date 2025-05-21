@@ -153,7 +153,7 @@ if (!bootstrapedServerSide) {
 // }
 
 if (window.oddServerSideConfig && window.oddServerSideConfig.loadAT) {
-  initATSDK('./at.js').then(() => {
+  initATSDK('./at.min.js').then(() => {
     window.adobe.target.getOffers({
       request: {
         prefetch: {
